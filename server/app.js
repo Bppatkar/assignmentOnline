@@ -1,3 +1,4 @@
+// Server side - index.js
 import express from "express";
 import { Server } from "socket.io";
 import { createServer } from "http";
@@ -26,14 +27,14 @@ app.get("/", (req, res) => {
 // creating circuit  where we get socket
 io.on("connection", (socket) => {
   console.log("user connected", socket.id);
+  socket.emit("welcome", `Welcome to the server! ${socket.id}`);
+  socket.broadcast.emit("welcome", `${socket.id} join the server`);
 
-  // socket.emit("welcome", "Welcome to the server");
-  // socket.broadcast.emit("welcome", ` ${socket.id} joined the server`);
-
-  socket.on("message", (data) => {
-    console.log(data);
+  socket.on("message", (message, room) => {
+    console.log(message, room);
     // io.emit("message-recieved", data);
-    socket.broadcast.emit("message-recieved", data);
+    // socket.broadcast.emit("message-recieved", message, room);
+    io.to(room).emit("message-recieved", message, room);
   });
 
   socket.on("disconnect", () => {
@@ -42,5 +43,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(port, () => {
-  console.log(`server listening on port${port}`);
+  console.log(`server listening on port ${port}`);
 });
