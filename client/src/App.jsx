@@ -8,7 +8,7 @@ function Chat({ socket }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("message", message);
+    socket.emit("message", { message, room });
     setMessage("");
     setroom("");
   };
@@ -35,6 +35,10 @@ function Chat({ socket }) {
       <Typography variant="h3" component="div" gutterBottom>
         Welcome to the assignment section
       </Typography>
+      <Typography variant="h5" component="div">
+        {socket.id}
+      </Typography>
+
       <form onSubmit={handleSubmit}>
         <TextField
           value={message}
